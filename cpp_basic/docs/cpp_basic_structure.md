@@ -248,3 +248,179 @@ C++ 编程语言提供了以下类型的判断语句：
 |嵌套 switch 语句|可以在一个 switch 语句内使用另一个 switch 语句。|
 
 
+#### 2.1.1 if 语句
+
+C++ 中 if 语句的语法：
+
+```cpp
+if (boolean_expression) {
+   // 如果布尔表达式为真将执行的语句
+}
+```
+
+如果布尔表达式为 true，则 if 语句内的代码块将被执行。如果布尔表达式为 false，则 if 语句结束后的第一组代码（闭括号后）将被执行。
+
+C++ 语言把任何非零和非空的值假定为 true，把零或 null 假定为 false。
+
+
+
+#### 2.1.2 if...else 语句
+
+C++ 中 if...else 语句的语法：
+
+```cpp
+if(boolean_expression) {
+   // 如果布尔表达式为真将执行的语句
+} else {
+   // 如果布尔表达式为假将执行的语句
+}
+```
+
+如果布尔表达式为 true，则执行 if 块内的代码。如果布尔表达式为 false，则执行 else 块内的代码。
+
+
+**if...else if...else 语句**
+
+一个 if 语句后可跟一个可选的 else if...else 语句，这可用于测试多种条件。
+
+当使用 if...else if...else 语句时，以下几点需要注意：
+
+* 一个 if 后可跟零个或一个 else，else 必须在所有 else if 之后。
+* 一个 if 后可跟零个或多个 else if，else if 必须在 else 之前。
+* 一旦某个 else if 匹配成功，其他的 else if 或 else 将不会被测试。
+
+
+
+#### 2.1.3 嵌套 if 语句
+
+C++ 中 嵌套 if 语句的语法：
+
+```cpp
+if( boolean_expression 1) {
+   // 当布尔表达式 1 为 true 时执行
+   if(boolean_expression 2) {
+      // 当布尔表达式 2 为 ture 时执行
+   }
+}
+```
+
+可以嵌套 else if...else，方式与嵌套 if 语句相似。
+
+```cpp
+if (condition1) {
+   // 如果 condition1 为 true，则执行此处的代码块
+   if (condition2) {
+      // 如果 condition2 也为 true，则执行此处的代码块
+   }
+   else {
+      // 如果 condition2 为 false，则执行此处的代码块
+   }
+}
+else {
+   // 如果 condition1 为 false，则执行此处的代码块
+}
+```
+
+
+#### 2.1.4 switch 语句
+
+一个 switch 语句允许测试一个变量等于多个值时的情况。每个值称为一个 case，且被测试的变量会对每个 switch case 进行检查。
+
+C++ 中 switch 语句的语法：
+
+```cpp
+switch(expression) {
+   case constant-expression:
+      statements;
+      break;   // 可选的
+   case constant-expression  :
+       statement(s);
+       break; // 可选的
+   // 可以有任意数量的 case 语句
+   default : // 可选的
+       statement(s);
+}
+```
+
+switch 语句必须遵循下面的规则：
+
+* switch 语句中的 expression 必须是一个**整型或枚举类型，或者是一个 class 类型**，其中 class 有一个**单一的转换函数将其转换为整型或枚举类型**。
+* 在一个 switch 中可以有任意数量的 case 语句。每个 case 后跟一个要比较的值和一个冒号。
+* **case 的 constant-expression 必须与 switch 中的变量具有相同的数据类型，且必须是一个常量或字面量**。
+* 当被测试的变量等于 case 中的常量时，case 后跟的语句将被执行，**直到遇到 break 语句为止**。
+* 当遇到 break 语句时，switch 终止，控制流将跳转到 switch 语句后的下一行。
+* **不是每一个 case 都需要包含 break**。如果 case 语句不包含 break，控制流将会 继续 后续的 case，直到遇到 break 为止。
+* 一个 switch 语句可以有一个**可选的 default case**，出现在 switch 的结尾。default case 可用于在上面所有 case 都不为真时执行一个任务。**default case 中的 break 语句不是必需的**。
+
+
+注：
+
+* break 语句： 每个 case 语句末尾的 break 语句，用于跳出 switch 语句。如果缺少 break，程序将继续执行下一个 case，这叫做"贯穿"。
+* default 语句： default 语句是可选的，但通常在所有 case 都不匹配时使用，处理所有未列出的情况。
+* 表达式类型： switch 表达式通常是整数类型或枚举类型，**浮点数和字符串类型是不可行的**。
+* 有时我们可能会有意使用贯穿，以下代码，如果 number 是 2 或 3，将会执行相同的代码块。
+
+```cpp
+int num = 2;
+switch(num){
+   case 1:
+      std::cout << "1" << std::enndl;
+      break;
+   case 2:
+   case 3:
+      std::cout << "2 or 3" << std::enndl;
+      break;
+   default:
+      std::cout << "Number is not 1, 2, or 3" << std::endl;
+}
+```
+
+
+
+#### 2.1.5 嵌套 switch 语句
+
+可以把一个 switch 作为一个外部 switch 的语句序列的一部分，即可以在一个 switch 语句内使用另一个 switch 语句。即使内部和外部 switch 的 case 常量包含共同的值，也没有矛盾。
+
+C++ 中的 switch 语句允许至少 256 个嵌套层次。
+
+C++ 中 嵌套 switch 语句的语法：
+
+```cpp
+switch(ch1) {
+   case 'A':
+      cout << "这个 A 是外部 switch 的一部分";
+      switch(ch2) {
+         case 'A':
+            cout << "这个 A 是内部 switch 的一部分";
+            break;
+         case 'B':
+            // 内部 B case 代码
+      }
+      break;
+   case 'B':
+      // 外部 B case 代码
+}
+```
+
+
+
+### 2.2 `? :` 运算符
+
+条件运算符 `? : ` 可以用来代替 if...else，它的一般形式如下：
+
+```cpp
+Exp1 ? Exp2 : Exp3;
+```
+
+其中，Exp1、Exp2 和 Exp3 是表达式。
+
+等价于：
+
+```cpp
+if (Exp1) {
+   Exp2;
+} else {
+   Exp3;
+}
+```
+
