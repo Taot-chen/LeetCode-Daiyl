@@ -1625,3 +1625,558 @@ std::clog << "Error message: " << std << std::endl;
 在项目实践中，**使用 `cerr` 流来显示错误消息，而其他的日志消息则使用 `clog` 流来输出**。
 
 
+
+
+
+## 11 结构体（struct）
+
+C/C++ 数组允许定义可**存储相同类型数据项的变量**，结构体**允许存储不同类型的数据项**。
+
+
+### 11.1 定义结构体
+
+在 C++ 中，`struct` 语句用于定义结构体（structure）。结构体是一种用户自定义的数据类型，用于将不同类型的数据组合在一起。与类（class）类似，**结构体允许定义成员变量和成员函数**。
+
+struct 语句的格式如下：
+
+```cpp
+struct struct_name {
+   number_type1 number_name1;
+   number_type2 number_name2;
+   number_type3 number_name3;
+   ...
+} obj_name;
+```
+
+struct_name 是结构体类型的名称，member_type1 member_name1 是标准的变量定义，比如 int i; 或者 float f;或者其他有效的变量定义。
+
+在结构定义的末尾，最后一个分号之前，可以指定一个或多个结构变量，这是可选的。这里在定义结构体的时候，顺便一起定义结构体变量，当然也可以在后面需要用到的时候再定义。
+
+```cpp
+struct Book {
+   char title[50];
+   char author[50];
+   char subject[100];
+   int book_id;
+} boook1;
+
+struct Book bok2;
+```
+
+结构体优点：
+
+* 简单数据封装：适合封装多种类型的简单数据，**通常用于数据的存储**。
+* 轻量级：相比 class，结构体语法更简洁，**适合小型数据对象**。
+* 面向对象支持：支持构造函数、成员函数和访问权限控制，可以实现面向对象的设计。
+
+
+
+### 11.2 访问结构成员
+
+为了访问结构的成员，使用成员访问运算符（`.`）。成员访问运算符是结构变量名称和要访问的结构成员之间的一个句号。
+
+结构的用法：
+
+```cpp
+struct Book {
+   char title[50];
+   char author[50];
+   char subject[100];
+   int book_id;
+};
+
+Book book1;
+Book book2;
+
+strcpy(book1.title, "c++ assd");
+strcpy(book1.author, "ohuo");
+strcpy(book1.subject, "hiahiahia");
+book1.book_id = 12345;
+strcpy(book1.title, "c++ ");
+strcpy(book1.author, "o");
+strcpy(book1.subject, "hiahia");
+book1.book_id = 1234;
+
+// 输出 Book1 信息
+std::cout << "第一本书标题 : " << book1.title <<endl;
+std::cout << "第一本书作者 : " << book1.author <<endl;
+std::cout << "第一本书类目 : " << book1.subject <<endl;
+std::cout << "第一本书 ID : " << book1.book_id <<endl;
+```
+
+
+
+### 11.2 结构作为函数参数
+
+可以把结构作为函数参数，传参方式与其他类型的变量或指针类似。
+
+```cpp
+void printBook(struct Book book) {
+   std::cout << "第一本书标题 : " << book.title <<endl;
+   std::cout << "第一本书作者 : " << book.author <<endl;
+   std::cout << "第一本书类目 : " << book.subject <<endl;
+   std::cout << "第一本书 ID : " << book.book_id <<endl;  
+   return;
+}
+
+printBook(book1);
+```
+
+
+* struct 关键字：用于定义结构体，它告诉编译器后面要定义的是一个自定义类型。
+
+* 成员变量：成员变量是结构体中定义的数据项，它们可以是任何基本类型或其他自定义类型。**在 struct 中，这些成员默认是 public，可以直接访问**。
+
+* 成员函数：**结构体中也可以包含成员函数**，这使得结构体在功能上类似于类。成员函数可以操作结构体的成员变量，提供对数据的封装和操作。
+
+* 访问权限：与 class 类似，可以在 struct 中使用 public、private 和 protected 来定义成员的访问权限。**在 struct 中，默认所有成员都是 public，而 class 中默认是 private**。
+
+
+### 11.3 指向结构的指针
+
+可以定义指向结构的指针，方式与定义指向其他类型变量的指针相似：
+
+```cpp
+struct Book* struct_pointer;
+struct_pointer = &book1;
+```
+
+结构体指针在访问结构体成员的时候，需要使用 `->`：
+
+```cpp
+Book book1("c++ assd", "ohuo", "hiahiahia", 12345);
+Book* struct_pointer = &book1;
+
+std::cout << "第一本书标题 : " << struct_pointer->title <<endl;
+std::cout << "第一本书作者 : " << struct_pointer->author <<endl;
+std::cout << "第一本书类目 : " << struct_pointer->subject <<endl;
+std::cout << "第一本书 ID : " << struct_pointer->book_id <<endl;
+```
+
+说明：
+
+* 结构体定义：Book 结构体的定义与之前相同，包含 title、author、subject 和 book_id 四个成员变量，并且**有一个构造函数用于初始化这些成员**。
+
+
+
+### 11.3 typedef 关键字
+
+一种更简单的定义结构的方式，为创建的类型取一个"别名"：
+
+```cpp
+typedef struct Book {
+   char title[50];
+   char author[50];
+   char subject[100];
+   int book_id;
+} BK;
+```
+
+现在，可以直接使用 BK 来定义 Book 类型的变量，而不需要使用 struct 关键字:
+
+```cpp
+BK book1;
+```
+
+也使用 typedef 关键字来定义非结构类型，如下所示：
+
+```cpp
+typedef long int* pint32;
+pint32 x, y, z;   // x, y 和 z 都是指向长整型 long int 的指针
+```
+
+
+### 11.4 结构体与类的区别
+
+在 C++ 中，struct 和 class 本质上非常相似，唯一的区别在于默认的访问权限：
+
+* struct 默认的成员和继承是 public。
+* class 默认的成员和继承是 private。
+
+可以将 struct 当作一种简化形式的 class，适合用于没有太多复杂功能的简单数据封装。
+
+
+
+### 11.5 结构体与函数的结合
+
+可以通过构造函数初始化结构体，还可以通过引用传递结构体来避免不必要的拷贝。
+
+```cpp
+struct Book {
+   char title[50];
+   char author[50];
+   char subject[100];
+   int book_id;
+
+   // 构造函数
+   Book(string t, string a, string s, int id): title(t), author(a), subject(s), book_id(id) {}
+
+   void printInfo() const {
+      std::cout << "标题 : " << title <<endl;
+      std::cout << "作者 : " << author <<endl;
+      std::cout << "类目 : " << subject <<endl;
+      std::cout << " ID : " << book_id <<endl;
+   }
+};
+
+struct Book book;
+void printBoofByRef(const Book& book) {
+   book.printInfo();
+}
+```
+
+
+
+
+## 12 vector 容器
+
+C++ 中的 vector 是一种序列容器，允许在运行时动态地插入和删除元素。vector 是基于数组的数据结构，但它可以自动管理内存。
+
+vector 是 C++ 标准模板库（STL）的一部分，提供了灵活的接口和高效的操作。
+
+基本特性:
+
+* 动态大小：vector 的大小可以根据需要自动增长和缩小。
+* 连续存储：vector 中的元素在内存中是**连续存储的**，这使得访问元素非常快速。
+* 可迭代：vector 可以被迭代，可以使用循环（如 for 循环）来访问它的元素。
+* 元素类型：vector 可以存储任何类型的元素，包括内置类型、对象、指针等。
+
+要使用 vector，首先需要包含 `<vector>` 头文件：
+
+```cpp
+#include <vector>
+std::vector<int> myVector; // 创建一个存储整数的空 vector
+
+
+// 也可以在创建时指定初始大小和初始值：
+std::vector<int> v1(5); // 创建一个包含 5 个整数的 vector，每个值都为默认值（0）
+std::vector<int> v2(5, 10);   // 创建一个包含 5 个整数的 vector，每个值都为 10
+
+// 默认初始化一个空的 vector
+std::vector<int> v3;
+std::vector<int> v4 = {1, 2, 3, 4};
+```
+
+
+### 12.1 添加元素
+
+使用 `push_back` 方法向 vector 中添加元素：
+
+```cpp
+myVector.push_back(7);  // 将整数 7 添加到 vector 的末尾
+```
+
+
+
+### 12.2 访问元素
+
+可以使用下标操作符 `[]` 或 `at() `方法访问 vector 中的元素：
+
+```cpp
+int x = myVector[0];
+int y = myVector.at(1);
+```
+
+
+
+
+### 12.3 获取大小
+
+使用 `size()` 方法获取 vector 中元素的数量：
+
+```cpp
+int size = myVector.size();
+```
+
+
+### 12.4 迭代访问
+
+可以使用迭代器遍历 vector 中的元素：
+
+```cpp
+for (auto it = myVector.begin(); it != myVector.end(); i++) {
+   atd::cout << *it << " ";
+}
+```
+
+或者使用范围循环：
+
+```cpp
+for (int ele: myVector) {
+   std::cout << element << " ";
+}
+```
+
+
+### 12.5 删除元素
+
+可以使用 `erase()` 方法删除 vector 中的元素：
+
+```cpp
+myVector.erease(myVector.begin() + 2); // 删除第三个元素
+```
+
+
+
+### 12.6 清空 Vector
+
+可以使用 `clear()` 方法清空 vector 中的所有元素：
+
+```cpp
+myVector.clear();
+```
+
+
+
+## 13 数据结构
+
+
+### 13.1 数组（Array）
+
+数组是最基础的数据结构，**用于存储一组相同类型的数据**。
+
+特点：
+
+* 固定大小，一旦声明，大小不能改变。
+* 直接访问元素，时间复杂度为 O(1)。
+* 适合处理大小已知、元素类型相同的集合。
+
+
+优缺点：
+
+* 优点：访问速度快，内存紧凑。
+* 缺点：大小固定，无法动态扩展，不适合处理大小不确定的数据集。
+
+
+### 13.2 结构体（struct）
+
+结构体**允许将不同类型的数据组合在一起**，形成一种自定义的数据类型。
+
+特点：
+
+* 可以包含不同类型的成员变量。
+* 提供了对数据的基本封装，但功能有限。
+
+
+
+
+### 13.3 类（class）
+
+类是 C++ 中用于面向对象编程的核心结构，允许定义成员变量和成员函数。与 struct 类似，但功能更强大，支持继承、封装、多态等特性。
+
+特点：
+
+* 可以包含成员变量、成员函数、构造函数、析构函数。
+* 支持面向对象特性，如封装、继承、多态。
+
+```cpp
+class Person {
+   private:
+      string name;
+      int agr;
+   public:
+      Person(string n, int a): name(n), age(a) {}
+      void printInfo() {
+         std::cout << "Name： " << name << ", age: " << age << std::endl;
+      }
+};
+
+Person p("Bob", 30);
+p.printInfo();
+```
+
+
+### 13.4 链表（Linked List）
+
+链表是一种动态数据结构，由一系列节点组成，每个节点包含数据和指向下一个节点的指针。
+
+特点：
+
+* 动态调整大小，不需要提前定义容量。
+* **插入和删除操作效率高**，时间复杂度为 O(1)（在链表头部或尾部操作）。
+* **线性查找**，时间复杂度为 O(n)。
+
+```cpp
+struct None {
+   int data;
+   Node* next;
+};
+Node* head = nullpttr;
+Node* newNode = new Node{10, nullptr};
+head = newNode;
+```
+
+
+优缺点：
+
+* 优点：动态大小，适合频繁插入和删除的场景。
+* 缺点：随机访问效率低，不如数组直接访问快。
+
+
+
+
+### 13.5 栈（Stack）
+
+栈是一种后进先出（LIFO, Last In First Out）的数据结构，常用于递归、深度优先搜索等场景。
+
+特点：
+
+* 只允许**在栈顶进行插入和删除操作**。
+* 时间复杂度为 O(1)。
+
+```cpp
+stack<int> s;
+s.push(1);
+s.push(2);
+std::cout << s.top();   // 输出 2
+s.pop();
+```
+
+
+
+优缺点：
+
+* 优点：操作简单，效率高。
+* 缺点：只能在栈顶操作，访问其他元素需要弹出栈顶元素。
+
+
+
+### 13.6 队列（Queue）
+
+队列是一种先进先出（FIFO, First In First Out）的数据结构，常用于广度优先搜索、任务调度等场景。
+
+特点：
+
+* **插入操作在队尾进行，删除操作在队头进行**。
+* 时间复杂度为 O(1)。
+
+
+```cpp
+queue<int> q;
+q.push(1);
+q.push(2);
+std::cout << q.front(); // 输出 1
+q.pop();
+```
+
+优缺点：
+
+* 优点：适合按顺序处理数据的场景，如任务调度。
+* 缺点：无法随机访问元素。
+
+
+
+### 13.7 双端队列（Deque）
+
+双端队列允许在两端进行插入和删除操作。
+
+特点：
+
+* 允许在两端进行插入和删除。
+* 时间复杂度为 O(1)。
+
+```cpp
+deque<int> dq;
+dq.push_back(1);
+dq.push_front(2);
+std::cout << dq.front();   // 输出 2
+dp.pop_front();
+```
+
+优缺点：
+
+* 优点：灵活的双向操作。
+* 缺点：空间占用较大，适合需要在两端频繁操作的场景。
+
+
+
+### 13.8 哈希表（Hash Table）
+
+哈希表是一种**通过键值对存储数据的数据结构**，支持快速查找、插入和删除操作。C++ 中的 `unordered_map` 是哈希表的实现。
+
+特点：
+
+* 使用哈希函数快速定位元素，时间复杂度为 O(1)。
+* 不保证元素的顺序。
+
+```cpp
+unordered_mao<string, int> hashTable;
+hashTable["apple"] = 10;
+std::cout << hashTable["apple"]; // 输出 10
+```
+
+优缺点：
+
+* 优点：查找、插入、删除操作效率高。
+* 缺点：无法保证元素顺序，哈希冲突时性能会下降。
+
+
+
+### 13.9 映射（Map）
+
+map 是一种**有序的键值对容器，底层实现是红黑树**。与 `unordered_map` 不同，**它保证键的顺序，查找、插入和删除的时间复杂度为 O(log n)**。
+
+特点：
+
+* 保证元素**按键的顺序排列**。
+* 使用二叉搜索树实现。
+
+```cpp
+map<string, int> mm;
+mm["apple"] = 10;
+std::cout << mm["apple"]; // 输出 10
+```
+
+优缺点：
+
+* 优点：元素有序，适合需要按顺序处理数据的场景。
+* 缺点：操作效率比 unordered_map 略低。
+
+
+### 13.10 集合（Set）
+
+set 是一种**用于存储唯一元素的有序集合，底层同样使用红黑树实现**。它**保证元素不重复且有序**。
+
+特点：
+
+* 保证元素的唯一性。
+* 元素自动按升序排列。
+* 时间复杂度为 O(log n)。
+
+
+```cpp
+set<int> s;
+s.insert(1);
+s.insert(2);
+std::cout << *s.begin();   // 输出 1
+```
+
+优缺点：
+
+* 优点：自动排序和唯一性保证。
+* 缺点：插入和删除的效率不如无序集合。
+
+
+
+### 13.11 动态数组（Vector）
+
+vector 是 C++ 标准库提供的动态数组实现，可以动态扩展容量，支持随机访问。
+
+特点：
+
+* 动态调整大小。
+* 支持随机访问，时间复杂度为 O(1)。
+* 当容量不足时，动态扩展，时间复杂度为摊销 O(1)。
+
+```cpp
+vector<int> v;
+v.push_back(1);
+v.push_back(2);
+std::cout << v[0];   // 输出 1
+```
+
+优缺点：
+
+* 优点：支持随机访问，动态扩展。
+* 缺点：插入和删除中间元素的效率较低。
+
