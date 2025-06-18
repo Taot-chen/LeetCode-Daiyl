@@ -1475,3 +1475,153 @@ int main() {
 再次调用： 10
 ```
 
+
+
+## 9 日期 & 时间
+
+C++ 标准库没有提供所谓的日期类型。C++ 继承了 C 语言用于日期和时间操作的结构和函数。为了使用日期和时间相关的函数和结构，需要在 C++ 程序中引用 `<ctime>` 头文件。
+
+有四个与时间相关的类型：`clock_t`、`time_t`、`size_t` 和 `tm`。类型 `clock_t`、`size_t` 和 `time_t` 能够把**系统时间和日期表示为某种整数**。
+
+结构类型 `tm` **把日期和时间以 C 结构的形式保存**，tm 结构的定义如下：
+
+```cpp
+struct tm {
+   int tm_sec;   // 秒，正常范围从 0 到 59，但允许至 61
+  int tm_min;   // 分，范围从 0 到 59
+  int tm_hour;  // 小时，范围从 0 到 23
+  int tm_mday;  // 一月中的第几天，范围从 1 到 31
+  int tm_mon;   // 月，范围从 0 到 11
+  int tm_year;  // 自 1900 年起的年数
+  int tm_wday;  // 一周中的第几天，范围从 0 到 6，从星期日算起
+  int tm_yday;  // 一年中的第几天，范围从 0 到 365，从 1 月 1 日算起
+  int tm_isdst; // 夏令时
+}
+```
+
+
+下面是 C/C++ 中关于日期和时间的重要函数。所有这些函数都是 C/C++ 标准库的组成部分
+
+|序号|函数|描述|
+|---|---|---|
+|1|time_t time(time_t *time);|该函数**返回系统的当前日历时间**，自 1970 年 1 月 1 日以来经过的秒数。**如果系统没有时间，则返回 -1**。|
+|2|char *ctime(const time_t *time);|该函数返回一个表示当地时间的**字符串指针**，字符串形式 `day month year hours:minutes:seconds year\n\0`。|
+|3|struct tm *localtime(const time_t *time);|该函数返回一个指向表示本地时间的 tm 结构的指针。|
+|4|clock_t clock(void);|该函数返回程序执行起（一般为程序的开头），**处理器时钟所使用的时间**。如果时间不可用，则返回 -1。|
+|5|char * asctime ( const struct tm * time );|该函数返回一个指向字符串的指针，字符串包含了**time 所指向结构中存储的信息**，返回形式为：`day month date hours:minutes:seconds year\n\0`。|
+|6|struct tm *gmtime(const time_t *time);|该函数返回一个指向 time 的指针，time 为 tm 结构，用协调世界时（UTC）也被称为格林尼治标准时间（GMT）表示。|
+|7|time_t mktime(struct tm *time);|该函数返回日历时间，相当于 time 所指向结构中存储的时间。|
+|8|double difftime ( time_t time2, time_t time1 );|该函数返回 time1 和 time2 之间相差的秒数。|
+|9|size_t strftime();|该函数可用于格式化日期和时间为指定的格式。|
+
+
+
+### 9.1 获取当前时间和日期
+
+```cpp
+#include <iostream>
+#include <ctime>
+
+int main() {
+    // 基于当前系统的当前日期/时间
+    time_t now = time(0);
+
+    // 把 now 转换为字符串形式
+    char* dt = ctime(&now);
+
+    std::cout << "本地日期和时间：" << dt << std::endl;
+
+    // 把 now 转换为 tm 结构
+    tm* gmtm = gmtime(&now);
+    dt = asctime(gmtm);
+    std::cout << "UTC 日期和时间："<< dt << std::endl;
+
+    return 0;
+}
+```
+
+
+### 9.2 使用结构 tm 格式化时间
+
+tm 结构以 C 结构的形式保存日期和时间。大多数与时间相关的函数都使用了 tm 结构。
+
+
+
+
+
+## 10 基本输入输出
+
+C++ 的 I/O 发生在流中，流是**字节序列**。如果字节流是从设备（如键盘、磁盘驱动器、网络连接等）流向内存，这叫做**输入操作**。如果字节流是从内存流向设备（如显示屏、打印机、磁盘驱动器、网络连接等），这叫做**输出操作**。
+
+
+### 10.1 I/O 库头文件
+
+* `<iostream>`，该文件定义了 `cin`、`cout`、`cerr` 和 `clog` 对象，分别对应于**标准输入流**、**标准输出流**、**非缓冲标准错误流**和**缓冲标准错误流**。
+
+* `<iomanip>`，该文件通过所谓的**参数化的流操纵器**（比如 `setw` 和 `setprecision`），来声明对执行标准化 I/O 有用的服务。
+
+* `fstream`，该文件为用户控制的文件处理声明服务。
+
+
+
+### 10.2 标准输出流（cout）
+
+预定义的对象 `cout` 是 `iostream` 类的一个实例。**cout 对象"连接"到标准输出设备，通常是显示屏**。`cout` 是与流插入运算符 <`<` 结合使用的，如下所示：
+
+```cpp
+std::cout << "adedwecsc" << s << std::endl;
+```
+
+C++ 编译器根据要输出变量的数据类型，选择合适的流插入运算符来显示值。`<<` 运算符被重载来输出内置类型（整型、浮点型、double 型、字符串和指针）的数据项。
+
+**流插入运算符** `<<` 在一个语句中可以多次使用，`endl` 用于在行末添加一个换行符。
+
+
+### 10.3 标准输入流（cin）
+
+预定义的对象 `cin` 是 `iostream` 类的一个实例。**`cin` 对象附属到标准输入设备**，通常是键盘。`cin` 是与**流提取运算符** `>>` 结合使用的，如下所示：
+
+```cpp
+char name[50];
+std::cin >> name;
+```
+
+C++ 编译器根据要输入值的数据类型，选择合适的流提取运算符来提取值，并把它存储在给定的变量中。
+
+流提取运算符 `>>` 在一个语句中可以多次使用，如果要求输入多个数据，可以使用如下语句：
+
+```cpp
+std::cin >> name >> age;
+
+// 相当于
+std::cin >> name;
+std::cin >> age;
+```
+
+
+### 10.4 标准错误流（cerr）
+
+预定义的对象 `cerr` 是 `iostream` 类的一个实例。**`cerr` 对象附属到标准输出设备**，通常也是显示屏，但是 **`cerr` 对象是非缓冲的，且每个流插入到 `cerr` 都会立即输出**。
+
+`cerr` 也是与**流插入运算符** `<<` 结合使用的，如下所示：
+
+```cpp
+char str[] = "Unable to read....";
+std::cerr << "Error message: " << str << std::endl;
+```
+
+
+### 10.5 标准日志流（clog）
+
+预定义的对象 `clog` 是 `iostream` 类的一个实例。**`clog` 对象附属到标准输出设备**，通常也是显示屏，但是 **`clog` 对象是缓冲的。这意味着每个流插入到 clog 都会先存储在缓冲区，直到缓冲填满或者缓冲区刷新时才会输出。**
+
+clog 也是与流插入运算符 `<<` 结合使用的，如下所示：
+
+```cpp
+char str[] = "Unable to read....";
+std::clog << "Error message: " << std << std::endl;
+```
+
+在项目实践中，**使用 `cerr` 流来显示错误消息，而其他的日志消息则使用 `clog` 流来输出**。
+
+
