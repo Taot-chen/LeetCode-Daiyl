@@ -550,3 +550,282 @@ Object is being created
 Length of line : 6
 Object is being deleted
 ```
+
+
+
+### 1.5 拷贝构造函数
+
+拷贝构造函数是一种特殊的构造函数，它在创建对象时，是**使用同一类中之前创建的对象来初始化新创建的对象**。拷贝构造函数通常用于：
+
+* 通过**使用另一个同类型的对象来初始化新创建的对象**。
+* 复制对象**把它作为参数传递给函数**。
+* 复制对象，并**从函数返回这个对象**。
+
+如果在类中没有定义拷贝构造函数，**编译器会自行定义一个**。如果**类带有指针变量，并有动态内存分配，则它必须有一个拷贝构造函数。**拷贝构造函数的最常见形式如下：
+
+```cpp
+classname (const classname& obj) {
+    // 构造函数的主体
+}
+```
+
+obj 是一个对象引用，该对象是用于初始化另一个对象的。
+
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Line {
+    public:
+        int getLength(void);
+        Line(int len);  // 简单的构造函数
+        Line(const Line& obj);  // 拷贝构造函数
+        ~Line();    // 析构函数
+    private:
+        int* ptr;
+};
+
+Line::Line(int len) {
+    cout << "调用构造函数" << endl;
+    ptr = new int;
+    *ptr = len;
+}
+
+Line::Line(const Line& obj) {
+    cout << "调用拷贝构造函数并为指针 ptr 分配内存" << endl;
+    ptr = new int;
+    *ptr = *obj.ptr;    // 拷贝值
+}
+
+Line::~Line(void) {
+    cout << "释放内存" << endl;
+    delete ptr;
+}
+
+int Line::getLength(void) {
+    return *ptr;
+}
+
+void display(Line obj) {
+    cout << "line 大小 : " << obj.getLength() <<endl;
+}
+
+int main() {
+    Line line(10);
+    Line line2 = line;  // 这里调用了拷贝构造函数
+    display(line);  // 复制对象把它作为参数传递给函数，触发拷贝构造函数
+    display(line2);
+    return 0;
+}
+```
+
+
+输出：
+
+```bash
+调用构造函数    // 构造line触发构造函数
+调用拷贝构造函数并为指针 ptr 分配内存   // Line line2 = line;通过使用另一个同类型的对象来初始化新创建的对象，触发拷贝构造函数
+调用拷贝构造函数并为指针 ptr 分配内存   // display(line);  // 复制对象把它作为参数传递给函数，触发拷贝构造函数
+line 大小 : 10
+释放内存    // display(line); 结束，释放函数参数拷贝的对象
+调用拷贝构造函数并为指针 ptr 分配内存   // display(line2);// 复制对象把它作为参数传递给函数，触发拷贝构造函数
+line 大小 : 10
+释放内存    // // display(line2); 结束，释放函数参数拷贝的对象
+释放内存    // 主函数结束，释放 line
+释放内存    // 主函数结束，释放 line2
+```
+
+
+### 1.6 友元函数
+
+类的友元函数是定义在类外部，但有权访问类的所有私有（private）成员和保护（protected）成员。友元函数的原型有在类的定义中出现，但是**友元函数并不是成员函数**。
+
+友元可以是一个函数，该函数被称为友元函数；友元也可以是一个类，该类被称为友元类，在这种情况下，整个类及其所有成员都是友元。
+
+声明函数为一个类的友元，需要在类定义中该函数原型前使用关键字 friend，如下所示：
+
+```cpp
+class Box {
+    double width;
+    public:
+        double length;
+        friend void printWidthP(Box box);
+        void setWidth(double wid);
+};
+```
+
+声明类 ClassTwo 的所有成员函数作为类 ClassOne 的友元，需要在类 ClassOne 的定义中放置如下声明：
+
+```cpp
+friend class ClassTwo;
+```
+
+
+### 1.6 内联函数
+
+C++ 内联函数是通常与类一起使用。如果一个函数是内联的，那么在编译时，编译器会把该函数的代码副本放置在每个调用该函数的地方。
+
+对内联函数进行任何修改，都需要重新编译函数的所有客户端，因为编译器需要重新更换一次所有的代码，否则将会继续使用旧的函数。
+
+在类定义中的定义的函数都是内联函数，即使没有使用 inline 说明符。
+
+实际上，对于现代编译器而言，内联只是建议编译器把 inline 修饰的函数作为内联处理，最终是否内联，由编译器决定。
+
+
+
+
+### 1.7 this 指针
+
+在 C++ 中，this 指针是一个指向当前对象的指针实例。每一个对象都能通过 this 指针来访问自己的地址。
+
+this是一个隐藏的指针，可以在类的成员函数中使用，它可以用来指向调用对象。当一个对象的成员函数被调用时，编译器会隐式地传递该对象的地址作为 this 指针。**友元函数没有 this 指针，因为友元不是类的成员，只有成员函数才有 this 指针**。
+
+成员函数通过 this 指针来访问成员变量，可以明确地告诉编译器我们想要访问当前对象的成员变量，而不是函数参数或局部变量。通过使用 this 指针，可以在成员函数中访问当前对象的成员变量，即使它们与函数参数或局部变量同名，这样可以避免命名冲突，并确保我们访问的是正确的变量。
+
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Box {
+    public:
+        Box(double l=2.0, double b = 2.0, double h = 1.0) {
+            cout <<"调用构造函数。" << endl;
+            length = l;
+            breadth = b;
+            height = h;    
+        }
+        double Volume() {
+            return length * breadth * height;
+        }
+        int compare(Box box) {
+            return this -> Volume() > box.Volume();
+        }
+    private:
+        double length;
+        double breadth;
+        double height;
+};
+
+int main() {
+    Box Box1(3.3, 1.2, 1.5);    // 声明 box1
+    Box Box2(8.5, 6.0, 2.0);    // 声明 box2
+    if (Box1.compare(Box2)) {
+        cout << "Box2 的体积比 Box1 小" << endl;
+    } else {
+        cout << "Box2 的体积大于或等于 Box1" << endl;
+    }
+    return 0;
+}
+```
+
+
+
+### 1.8 指向类的指针
+
+一个指向 C++ 类的指针与指向结构的指针类似，访问指向类的指针的成员，需要使用成员访问运算符 `->`。
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Box {
+    public:
+        Box(double l=2.0, double b = 2.0, double h = 1.0) {
+            cout <<"调用构造函数。" << endl;
+            length = l;
+            breadth = b;
+            height = h;    
+        }
+        double Volume() {
+            return length * breadth * height;
+        }
+        int compare(Box box) {
+            return this -> Volume() > box.Volume();
+        }
+    private:
+        double length;
+        double breadth;
+        double height;
+};
+
+int main() {
+    Box Box1(3.3, 1.2, 1.5);    // 声明 box1
+    Box Box2(8.5, 6.0, 2.0);    // 声明 box2
+
+    Box* ptr;
+    ptr = &Box1;
+    cout << "Volume of Box1: " << ptr->Volume() << endl;
+
+    ptr = &Box2;
+    cout << "Volume of Box2: " << ptr->Volume() << endl;
+
+    return 0;
+}
+```
+
+
+
+
+### 1.9 类的静态成员
+
+可以使用 static 关键字来把类成员定义为静态的。当我们声明类的成员为静态时，这意味着无论创建多少个类的对象，静态成员都只有一个副本。**静态成员在类的所有对象中是共享的**。
+如果不存在其他的初始化语句，在创建第一个对象时，所有的静态数据都会被初始化为零。**不能把静态成员的初始化放置在类的定义中，但是可以在类的外部通过使用范围解析运算符 `::` 来重新声明静态变量从而对它进行初始化**，
+
+```cpp
+#include <iostream>
+using namespace std;
+
+class Box {
+    public:
+        static int objCnt;
+        Box(double l=2.0, double b = 2.0, double h = 1.0) {
+            cout <<"调用构造函数。" << endl;
+            length = l;
+            breadth = b;
+            height = h;
+            objCnt += 1;
+        }
+        double Volume() {
+            return length * breadth * height;
+        }
+        int compare(Box box) {
+            return this -> Volume() > box.Volume();
+        }
+    private:
+        double length;
+        double breadth;
+        double height;
+};
+
+// 初始化类 Box 的静态成员
+int Box::objCnt = 0;
+int main() {
+    Box Box1(3.3, 1.2, 1.5);    // 声明 box1
+    Box Box2(8.5, 6.0, 2.0);    // 声明 box2
+
+    cout << "Total objs: " << Box::objCnt << endl;
+    cout << "Total objs: " << Box1.objCnt << endl;
+
+    return 0;
+}
+```
+
+
+**静态成员函数**
+
+如果把函数成员声明为静态的，就可以**把函数与类的任何特定对象独立开来**。**静态成员函数即使在类对象不存在的情况下也能被调用，静态函数只要使用类名加范围解析运算符 `::` 就可以访问**。
+
+**静态成员函数只能访问静态成员数据、其他静态成员函数和类外部的其他函数**。静态成员函数有一个类范围，**他们不能访问类的 this 指针**。可以使用静态成员函数来判断类的某些对象是否已被创建。
+
+静态成员函数与普通成员函数的区别：
+
+* 静态成员函数没有 this 指针，只能访问静态成员（包括静态成员变量和静态成员函数）
+    * 这个可以这么理解：静态成员函数可以类对象不存在的情况被调用，此时由于没有具体的类对象，那么**非静态成员变量和非静态成员函数还没有被创建，也没有指向类对象实例的 this，指针**。
+* 普通成员函数有 this 指针，可以访问类中的任意成员；而静态成员函数没有 this 指针
+
+```cpp
+
+```
+
