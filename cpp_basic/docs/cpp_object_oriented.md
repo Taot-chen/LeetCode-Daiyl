@@ -1012,7 +1012,6 @@ int main() {
 
 
 
-
     // protected 继承
     std::cout << "\nprotected inheritance" << std::endl;
     // protected 继承的子类，在外部不可以直接访问基类的 public 成员
@@ -1050,7 +1049,7 @@ int main() {
 
 * 基类的 private 成员变量在子类中不能直接访问
 
-* 类的 protected 和 private 成员变量在子类中不能直接访问，需要通过类的 public 方法来间接访问
+* 类的 private 成员变量在子类中不能直接访问，需要通过类的 public 方法来间接访问
 
 * public 继承的子类，在外部可以直接访问基类的 public 成员
     * 这个可以认为是 public 继承的子类，会将父类的 public 成员继承为自己的 public 成员变量，因此可以在外部直接访问
@@ -1080,3 +1079,290 @@ int main() {
 * 子类继承基类的方式，决定了子类从基类获取到的成员的权限类型，并且基类的 private 成员，子类实际上是没有直接继承的。
 
 
+## 2 继承
+
+面向对象程序设计中最重要的一个概念是继承。继承允许我们依据另一个类来定义一个类，达到了重用代码功能和提高执行效率的效果。
+
+当创建一个类时，不需要重新编写新的数据成员和成员函数，只需指定新建的类继承一个已有的类的成员即可。这个已有的类称为基类，新建的类称为派生类。
+
+```cpp
+// 基类
+class Animal {
+    // eat() 函数
+    // sleep() 函数
+};
+
+//派生类
+class Dog: public Animal {
+    // bark() 函数
+}；
+```
+
+
+
+### 2.1 基类 & 派生类
+
+一个类可以派生自多个类，可以从多个基类继承数据和函数。定义一个派生类，使用一个类派生列表来指定基类。类派生列表以一个或多个基类命名，形式如下：
+
+```cpp
+class derived_class: access_scifier base_class
+```
+
+访问修饰符 access-specifier 是 public、protected 或 private 其中的一个，base-class 是之前定义过的某个类的名称。**如果未使用访问修饰符 access-specifier，则默认为 private**。
+
+
+
+### 2.2 访问控制和继承
+
+**派生类可以访问基类中所有的非私有成员**。
+
+出不同的访问类型:
+
+|访问|public|protected|private|
+|---|---|---|---|
+|同一个类|yes|yes|yes|
+|派生类|yes|yes|no|
+|外部的类|yes|no|no|
+
+
+一个派生类继承了所有的基类方法，但下列情况除外：
+
+* 基类的构造函数、析构函数和拷贝构造函数
+* 基类的重载运算符
+* 基类的友元函数
+
+
+
+### 2.3 继承类型
+
+基类可以被继承为 public、protected 或 private 几种类型。继承类型是通过访问修饰符 access-specifier 来指定的。
+
+几乎不使用 `protected` 或 `private` 继承，通常使用 `public` 继承。当使用不同类型的继承时，遵循以下几个规则：
+
+* 公有继承（public）：当一个类派生自公有基类时，基类的公有成员也是派生类的公有成员，基类的保护成员也是派生类的保护成员，**基类的私有成员不能直接被派生类访问，但是可以通过调用基类的公有和保护成员来访问**。
+
+* 保护继承（protected）： 当一个类派生自保护基类时，基类的公有和保护成员将成为派生类的保护成员。
+
+* 私有继承（private）：当一个类派生自私有基类时，基类的公有和保护成员将成为派生类的私有成员。
+
+
+
+### 2.4 多继承
+
+多继承即一个子类可以有多个父类，它继承了多个父类的特性。
+
+C++ 类可以从多个类继承成员，语法如下：
+
+```cpp
+class <派生类名>:<继承方式1><基类名1>,<继承方式2><基类名2>,… {
+    <派生类类体>
+};
+```
+
+访问修饰符继承方式是 public、protected 或 private 其中的一个，用来修饰每个基类，各个基类之间用逗号分隔，
+
+```cpp
+#include <iostream>
+
+// 基类 Shape
+class Shape {
+    public:
+        void setWidth(int w) {
+            width = w;
+        }
+        void setHeight(int h) {
+            height = h;
+        }
+    protected:
+        int width;
+        int height;
+};
+
+// 基类 PaintCost
+class PaintCost {
+    public:
+        int getCost(int area) {
+            return area * 70;
+        }
+};
+
+// 派生类
+class Rectangle: public Shape, public PaintCost {
+    public:
+        int getArea() {
+            return (width * height);
+        }
+};
+
+int main() {
+    Rectangle rect;
+    int area;
+    rect.setWidth(5);
+    rect.setHeight(7);
+    area = rect.getArea();
+
+    std::cout << "Total area: " << area << std::endl;
+    std::cout << "Total paint cost: $" << rect.getCost(area) << std::endl;
+
+    return 0;
+}
+```
+
+
+## 3 重载
+
+C++ 允许在同一作用域中的某个函数和运算符指定多个定义，分别称为函数重载和运算符重载。
+
+重载声明是指一个与之前已经在该作用域内声明过的函数或方法**具有相同名称**的声明，但是**它们的参数列表和定义（实现）不相同**。
+
+当调用一个重载函数或重载运算符时，编译器通过把使用的参数类型与定义中的参数类型进行比较，决定选用最合适的定义。**选择最合适的重载函数或重载运算符的过程，称为重载决策**。
+
+
+
+### 3.1 函数重载
+
+在同一个作用域内，可以声明几个功能类似的**同名函数**，但是这些同名函数的**形式参数（指参数的个数、类型或者顺序）必须不同**。**不能仅通过返回类型的不同来重载函数**。
+
+重载 `print()` 用来输出不同的数据类型：
+
+```cpp
+#include <iostream>
+
+class printData {
+    public:
+        void print(int i) {
+            std::cout << "INT: " << i << std::endl;
+        }
+
+        void print(double f) {
+            std::cout << "DOUBLE: " << f << std::endl;
+        }
+
+        void print(char c[]) {
+            std::cout << "STRING: " << c << std::endl;
+        }
+};
+
+int main() {
+    printData pd;
+    pd.print(5);
+    pd.print(2.1);
+    pd.print("Hello Cpp");
+    return 0;
+}
+```
+
+
+
+### 3.2 运算符重载
+
+可以重定义或重载大部分 C++ 内置的运算符。
+
+**重载的运算符是带有特殊名称的函数**，函数名是**由关键字 operator 和其后要重载的运算符符号构成的**。与其他函数一样，重载运算符有一个返回类型和一个参数列表。
+
+```cpp
+Box operator+(const Box&);
+```
+
+声明加法运算符用于把两个 Box 对象相加，返回最终的 Box 对象。
+
+大多数的重载运算符可被定义为**普通的非成员函数**或者被定义为**类成员函数**。如果我们定义上面的函数为类的非成员函数，那么我们需要为每次操作传递两个参数，如下所示：
+
+```cpp
+Box operator+(const Box&, const Box&);
+```
+
+```cpp
+#include <iostream>
+
+class Box {
+    private:
+        double length;
+        double heigth;
+        double breadth;
+    public:
+        double getV(void) {
+            return length * breadth * heigth;
+        }
+        void setLength(double len) {
+            length = len;
+        }
+        void setBreadth(double bread) {
+            breadth = bread;
+        }
+        void setHeigth(double heig) {
+            heigth = heig;
+        }
+        Box operator + (const Box& b) {
+            Box box;
+            // 这里的bxo加法定义合理性不要在意
+            box.length = this -> length + b.length;
+            box.heigth = this -> heigth + b.heigth;
+            box.breadth = this -> breadth + b.breadth;
+            return box;
+        }
+};
+
+int main() {
+    Box box1;
+    Box box2;
+    Box box3;
+
+    box1.setBreadth(1.1);
+    box1.setHeigth(2.2);
+    box1.setLength(3.3);
+
+    box2.setBreadth(4.4);
+    box2.setHeigth(5.5);
+    box2.setLength(6.6);
+
+    box3 = box1 + box2;
+
+    std::cout << "V1: " << box1.getV() << std::endl;
+    std::cout << "V2: " << box2.getV() << std::endl;
+    std::cout << "V3: " << box3.getV() << std::endl;
+
+    return 0;
+}
+```
+
+
+
+### 3.3 可重载运算符/不可重载运算符
+
+下面是可重载的运算符列表：
+
+|双目算术运算符|+ (加)，-(减)，*(乘)，/(除)，% (取模)|
+|---|---|
+|关系运算符|==(等于)，!= (不等于)，< (小于)，> (大于)，<=(小于等于)，>=(大于等于)|
+逻辑运算符|ll(逻辑或)，&&(逻辑与)，!(逻辑非)|
+|单目运算符|+ (正)，-(负)，*(指针)，&(取地址)|
+|自增自减运算符|++(自增)，--(自减)|
+|位运算符| l (按位或)，& (按位与)，~(按位取反)，^(按位异或),，<< (左移)，>>(右移)|
+|赋值运算符|=, +=, -=, *=, /= , % = , &=, |=, ^=, <<=, >>=|
+|空间申请与释放|new, delete, new[ ] , delete[]|
+|其他运算符|()(函数调用)，->(成员访问)，,(逗号)，[](下标)|
+
+
+下面是不可重载的运算符列表：
+
+* `.`：成员访问运算符
+* `.*`, `->*`：成员指针访问运算符
+* `::`：域运算符
+* `sizeof`：长度运算符
+* `?:`：条件运算符
+* `#`： 预处理符号
+
+
+
+### 3.4 各种运算符重载
+
+* [一元运算符重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/042_class_19.cpp)
+* [二元运算符重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/043_class_29.cpp)
+* [关系运算符重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/044_class_30.cpp)
+* [输入/输出运算符重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/045_class_31.cpp)
+* [`++` 和 `--` 运算符重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/046_class_32.cpp)
+* [赋值运算符重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/047_class_33.cpp)
+* [函数调用运算符 `()` 重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/048_class_34.cpp)
+* [下标运算符 `[]` 重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/049_class_35.cpp)
+* [类成员访问运算符 `->` 重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/050_class_36.cpp)
