@@ -1804,3 +1804,69 @@ int main() {
 
 
 
+
+## 7 接口（抽象类）
+
+接口描述了类的行为和功能，而不需要完成类的特定实现。C++ 接口是使用抽象类来实现的，抽象类与数据抽象互不混淆，**数据抽象是一个把实现细节与相关的数据分离开的概念**。如果类中至少有一个函数被声明为**纯虚函数**，则这个类就是抽象类。
+
+设计抽象类（通常称为 ABC）的目的，是**为了给其他类提供一个可以继承的适当的基类**。抽象类**不能被用于实例化对象，它只能作为接口使用**。如果试图实例化一个抽象类的对象，会导致编译错误。如果一个 ABC 的子类需要被实例化，则**必须实现每个纯虚函数**，这也意味着 **C++ 支持使用 ABC 声明接口**。如果没有在派生类中重写纯虚函数，就尝试实例化该类的对象，会导致编译错误。
+
+可用于实例化对象的类被称为**具体类**。
+
+
+```cpp
+#include <iostream>
+
+// 基类
+class Shape {
+    public:
+        // 提供接口框架的纯虚函数
+        virtual int getArea() = 0;
+        void setWidth(int w) {
+            width = w;
+        }
+        void setHeight(int h) {
+            height = h;
+        }
+    protected:
+        int width;
+        int height;
+};
+
+// 派生类
+class Rectangle: public Shape {
+    public:
+        int getArea() { 
+            return (width * height); 
+        }
+};
+
+class Triangle: public Shape {
+    public:
+    int getArea() { 
+        return (width * height)/2; 
+    }
+};
+
+int main() {
+    Rectangle rect;
+    Triangle tria;
+
+    rect.setWidth(5);
+    rect.setHeight(7);
+    std::cout << "Total Rectangle area: " << rect.getArea() << std::endl;
+
+    tria.setWidth(5);
+    tria.setHeight(7);
+    std::cout << "Total Triangle area: " << tria.getArea() << std::endl;
+    return 0;
+}
+```
+
+面向对象的系统可能会使用一个抽象基类为所有的外部应用程序提供一个适当的、通用的、标准化的接口。然后，派生类通过继承抽象基类，就把所有类似的操作都继承下来。
+
+外部应用程序提供的功能（即公有函数）在抽象基类中是以纯虚函数的形式存在的。这些纯虚函数在相应的派生类中被实现。
+
+这个架构也使得新的应用程序可以很容易地被添加到系统中，即使是在系统被定义之后依然可以如此。
+
+**定义虚函数是为了允许用基类的指针来调用子类的这个函数。定义纯虚函数是为了实现一个接口，起到一个规范的作用，规范继承这个类的程序员必须实现这个函数**。
