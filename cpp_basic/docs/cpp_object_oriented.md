@@ -1366,3 +1366,284 @@ int main() {
 * [函数调用运算符 `()` 重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/048_class_34.cpp)
 * [下标运算符 `[]` 重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/049_class_35.cpp)
 * [类成员访问运算符 `->` 重载](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/src/050_class_36.cpp)
+
+
+
+## 4 多态
+
+当类之间存在层次结构，并且类之间是通过继承关联时，就会用到多态。
+
+在 C++ 中，多态（Polymorphism）是面向对象编程的重要特性之一。C++ **多态允许使用基类指针或引用来调用子类的重写方法，从而使得同一接口可以表现不同的行为**。
+
+多态使得代码更加灵活和通用，**程序可以通过基类指针或引用来操作不同类型的对象，而不需要显式区分对象类型**。这样可以使代码更具扩展性，在增加新的形状类时不需要修改主程序。
+
+以下是多态的几个关键点：
+
+* 虚函数（Virtual Functions）：
+
+    * 在基类中声明一个函数为虚函数，使用关键字`virtual`。
+    * 派生类可以重写（override）这个虚函数。
+    * 调用虚函数时，**会根据对象的实际类型来决定调用哪个版本的函数**。
+
+
+* 动态绑定（Dynamic Binding）：
+
+    * 也称为晚期绑定（Late Binding），**在运行时确定函数调用的具体实现**。
+    * **需要使用指向基类的指针或引用来调用虚函数**，编译器在运行时根据对象的实际类型来决定调用哪个函数。
+
+
+* 纯虚函数（Pure Virtual Functions）：
+
+    * 一个包含纯虚函数的类被称为**抽象类（Abstract Class）**，**它不能被直接实例化**。
+    * **纯虚函数没有函数体**，声明时使用`= 0`。
+    * **它强制派生类提供具体的实现**。
+
+
+* 多态的实现机制：
+
+    * 虚函数表（V-Table）：C++ 运行时使用虚函数表来实现多态。**每个包含虚函数的类都有一个虚函数表，表中存储了指向类中所有虚函数的指针**。
+    * 虚函数指针（V-Ptr）：对象中包含一个指向该类虚函数表的指针。
+
+
+* 使用多态的优势：
+
+    * 代码复用：**通过基类指针或引用**，可以操作不同类型的派生类对象，实现代码的复用。
+    * 扩展性：新增派生类时，不需要修改依赖于基类的代码，**只需要确保新类正确重写了虚函数**。
+    * 解耦：多态允许程序设计更加模块化，降低类之间的耦合度。
+
+
+* 注意事项：
+
+    * **只有通过基类的指针或引用调用虚函数时，才会发生多态**。
+    * 如果直接使用派生类的对象调用函数，那么调用的是派生类中的版本，而不是基类中的版本。
+    * **多态性需要运行时类型信息（RTTI），这可能会增加程序的开销**。
+
+
+一个多态的例子：
+
+```cpp
+#include <iostream>
+
+// 基类 Animal
+class Animal {
+    public:
+        // 虚函数 sound，为不同的动物发声提供接口
+        virtual void sound() const {
+            std::cout << "Animal makes a sound" << std::endl;
+        }
+
+        // 虚析构函数确保子类对象被正确析构
+        virtual ~Animal() {
+            std::cout << "Animal destroyed" << std::endl;
+        }
+};
+
+// 派生类 Dog，继承自 Animal
+class Dog: public Animal {
+    public:
+        // 重写 sound 方法
+        void sound() const override {
+            std::cout << "Dog barks" << std::endl;
+        }
+        ~Dog() {
+            std::cout << "Dog destroyed" << std::endl;
+        }
+};
+
+// 派生类 Cat，继承自 Animal
+class Cat: public Animal {
+    public:
+        // 重写 sound 方法
+        void sound() const override {
+            std::cout << "Cat meows" << std::endl;
+        }
+        // ~Cat() {
+        //     std::cout << "Cat destroyed" << std::endl;
+        // }
+};
+
+int main() {
+    Animal* animalPtr;  // 基类指针
+
+    // 创建 Dog 对象，并指向 Animal 指针
+    animalPtr = new Dog();
+    animalPtr->sound(); // 调用 Dog 的 sound 方法
+    delete animalPtr;   // 释放内存，调用 Dog 和 Animal 的析构函数
+
+    // 创建 Cat 对象，并指向 Animal 指针
+    animalPtr = new Cat();
+    animalPtr->sound(); // 调用 Cat 的 sound 方法
+    delete animalPtr;   // 释放内存，由于 cat 类没有重写析构函数，实际只调用 Animal 的析构函数
+
+    return 0;
+}
+```
+
+输出：
+
+```bash
+Dog barks
+Dog destroyed
+Animal destroyed
+Cat meows
+Animal destroyed
+```
+
+说明：
+
+* 基类 Animal：
+    * Animal 类定义了一个虚函数 sound()，这是一个虚函数（virtual），用于表示动物发声的行为。
+    * ~Animal() 为虚析构函数，确保在释放基类指针指向的派生类对象时能够正确调用派生类的析构函数，防止内存泄漏。
+
+* 派生类 Dog 和 Cat：
+    * Dog 和 Cat 类都从 Animal 类派生，并各自实现了 sound() 方法。
+    * Dog 的 sound() 输出"Dog barks"；Cat 的 sound() 输出"Cat meows"。这使得同一个方法（sound()）在不同的类中表现不同的行为。
+
+* 主函数 main()：
+    * 释放 Dog 对象时，先调用 Dog 的析构函数，再调用 Animal 的析构函数。
+
+
+* 虚函数：通过在基类中使用 virtual 关键字声明虚函数，派生类可以重写这个函数，从而使得在运行时根据对象类型调用正确的函数。
+
+* 动态绑定：C++ 的多态通过动态绑定实现。在运行时，基类指针 animalPtr 会根据它实际指向的对象类型（Dog 或 Cat）调用对应的 sound() 方法。
+
+* 虚析构函数：在具有多态行为的基类中，析构函数应该声明为 virtual，以确保在删除派生类对象时调用派生类的析构函数，防止资源泄漏。
+
+
+
+
+### 4.1 动态绑定
+
+下面通过多态实现了一个通用的 Shape 基类和两个派生类 Rectangle 和 Triangle，并通过基类指针调用不同的派生类方法，展示了多态的动态绑定特性。
+
+```cpp
+#include <iostream>
+
+// 基类 Shape，表示形状
+class Shape {
+    protected:
+        int width, height;
+    public:
+        // 构造函数，带有默认参数
+        Shape(int a = 0, int b = 0): width(a), height(b) {}
+
+        // 虚函数 area，用于计算面积
+        // 使用 virtual 关键字，实现多态
+        virtual int area() {
+            std::cout << "Shape class area: " << std::endl;
+            return 0;
+        }
+};
+
+// 派生类 Rectangle，表示矩形
+class Rectangle: public Shape {
+    public:
+        // 构造函数，使用基类构造函数初始化 width 和 height
+        Rectangle(int a = 0, int b = 0) : Shape(a, b) {}
+
+        // 重写 area 函数，计算矩形面积
+        int area() override {
+            std::cout << "Rectangle class area: " << std::endl;
+            return width * height;
+        }
+};
+
+// 派生类 Triangle，表示三角形
+class Triangle : public Shape {
+    public:
+        // 构造函数，使用基类构造函数初始化 width 和 height
+        Triangle(int a = 0, int b = 0) : Shape(a, b) { }
+ 
+        // 重写 area 函数，计算三角形面积
+        int area() override { 
+            std::cout << "Triangle class area: " << std::endl;
+            return (width * height / 2); 
+        }
+};
+
+
+int main() {
+    Shape* shape;   // 基类指针
+    Rectangle rec(10, 7);
+    Triangle tri(10, 5);
+
+    shape = &rec;
+    std::cout << "Rectangle Area: " << shape->area() << std::endl;
+
+    shape = &tri;
+    std::cout << "Triangle Area: " << shape->area() << std::endl;
+    return 0;
+}
+```
+
+输出：
+
+```bash
+Rectangle Area: Rectangle class area:
+70
+Triangle Area: Triangle class area:
+25
+```
+
+说明：
+
+* Shape 是一个抽象基类，定义了一个虚函数 area()。area() 是用来计算面积的虚函数，并使用了 virtual 关键字，这样在派生类中可以重写该函数，进而实现多态。
+
+* width 和 height 是 Shape 的 protected 属性，只能在 Shape 类及其派生类中访问。
+
+* Rectangle 继承了 Shape 类，并重写了 area() 方法，计算矩形的面积。area() 方法使用了 override 关键字，表示这是对基类 Shape 的 area() 方法的重写。Triangle 类也继承自 Shape，并重写了 area() 方法，用于计算三角形的面积。
+
+* main 函数中，首先将 shape 指针指向 Rectangle 对象 rec，然后调用 shape->area()。由于 area() 是虚函数，此时会动态绑定到 Rectangle::area()，输出矩形的面积。接着，将 shape 指针指向 Triangle 对象 tri，调用 shape->area() 时会动态绑定到 Triangle::area()，输出三角形的面积。
+
+
+
+### 4.2 虚函数
+
+虚函数是在基类中使用关键字 virtual 声明的函数。虚函数允许子类重写它，从而在运行时通过基类指针或引用调用子类的重写版本，实现动态绑定。
+
+我们想要的是在程序中任意点可以根据所调用的对象类型来选择调用的函数，这种操作被称为动态链接，或后期绑定。
+
+特点：
+
+* 在基类中可以有实现。通常虚函数在基类中提供默认实现，但子类可以选择重写。
+
+* 动态绑定：在运行时根据对象的实际类型调用相应的函数版本。
+
+* 可选重写：**派生类可以选择性地重写虚函数，但不是必须**。
+
+
+
+### 4.3 纯虚函数
+
+纯虚函数是没有实现的虚函数，在基类中用 `= 0` 来声明。纯虚函数表示基类定义了一个接口，但具体实现由派生类负责。**纯虚函数使得基类变为抽象类（abstract class），无法实例化。**
+
+
+特点：
+
+* 必须在基类中声明为 `= 0`，**表示没有实现，子类必须重写**。
+* 抽象类：**包含纯虚函数的类不能直接实例化，必须通过派生类实现所有纯虚函数才能创建对象**。
+* 接口定义：纯虚函数通常用于定义接口，让派生类实现具体行为。
+* `= 0` 告诉编译器，函数没有主体。
+
+```cpp
+#include <iostream>
+using namespace std;
+ 
+class Shape {
+public:
+    virtual int area() = 0;  // 纯虚函数，强制子类实现此方法
+};
+ 
+class Rectangle : public Shape {
+private:
+    int width, height;
+public:
+    Rectangle(int w, int h) : width(w), height(h) { }
+    
+    int area() override {  // 实现纯虚函数
+        return width * height;
+    }
+};
+```
+
+
