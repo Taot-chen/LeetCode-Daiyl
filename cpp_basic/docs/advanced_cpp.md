@@ -762,3 +762,210 @@ int main() {
 }
 ```
 
+
+
+## 6 预处理器
+
+预处理器是一些指令，指示编译器在实际编译之前所需完成的预处理。所有的预处理器指令都是以井号（`#`）开头，**只有空格字符可以出现在预处理指令之前**。**预处理指令不是 C++ 语句，所以它们不会以分号（;）结尾**。
+
+`#include` 指令, 这个宏用于把头文件包含到源文件中。C++ 还支持很多预处理指令，比如 `#include`、`#define`、`#if`、`#else`、`#line` 等。
+
+
+### 6.1 #define 预处理
+
+`#define` 预处理指令用于**创建符号常量**。该符号常量通常称为宏，指令的一般形式是：
+
+```cpp
+#define macro-name replacement-text
+```
+
+当这一行代码出现在一个文件中时，在该文件中后续出现的所有宏都将会在程序编译之前被替换为 replacement-text。例如：
+
+```cpp
+#include <iostream>
+
+#define PI 3.14159
+
+int main() {
+    std::cout << "Value of Pi: " << PI << std::endl;
+    return 0;
+}
+```
+
+测试这段代码，看看预处理的结果。使用 `-E` 选项进行编译，并把结果重定向到 `test.p`。
+
+```bash
+g++ -E test.cpp > test.p
+```
+
+`test.p` 文件已经包含大量的信息，而且在文件底部的值被改为如下：
+
+```cpp
+...
+int main() {
+    std::cout << "Value of Pi: " << 3.14159 << std::endl;
+    return 0;
+}
+```
+
+
+
+### 6.2 参数宏
+
+可以使用 #define 来定义一个带有参数的宏，如下所示：
+
+```cpp
+#include <iostream>
+
+#define MIN(a, b) (a < b ? a : b)
+
+int main() {
+    int i, j;
+    i = 100;
+    j = 10;
+    std::cout << "MIN(i, j): " << MIN(i, j) << std::endl;
+    return 0;
+}
+```
+
+
+### 6.3 条件编译
+
+可以有选择地对部分程序源代码进行编译。这个过程被称为条件编译。条件预处理器的结构与 if 选择结构很像。
+
+```cpp
+#ifdef NUMM
+    #define NULL 0
+#endif
+```
+
+可以只在调试时进行编译，调试开关可以使用一个宏来实现，如下所示：
+
+```cpp
+#ifdef DEBUG
+    std::cerr << "Variable x = " << x << std::endl;
+#endif
+```
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// #define DEBUG
+#define MIN(a,b) (((a)<(b)) ? a : b)
+
+int main() {
+    int i, j;
+    i = 100;
+    j = 10;
+    #ifdef DEBUG
+        std::cerr << "Trace: Inside main function" << std::endl;
+    #endif
+
+    #if 0
+        /* 这是注释部分 */
+        cout << MKSTR(HELLO C++) << endl;
+    #endif
+
+    cout <<"The minimum is " << MIN(i, j) << endl;
+
+    #ifdef DEBUG
+        cerr <<"Trace: Coming out of main function" << endl;
+    #endif
+    return 0;
+}
+```
+
+上面的代码输出：
+
+```cpp
+The minimum is 10
+```
+
+把 `// #define DEBUG`取消注释，输出：
+
+```cpp
+Trace: Inside main function
+The minimum is 10
+Trace: Coming out of main function
+```
+
+
+### 6.4 `#` 和 `##` 运算符
+
+`#` 和 `##` 预处理运算符在 C++ 和 ANSI/ISO C 中都是可用的。
+
+
+`#` 运算符会把 replacement-text 令牌转换为用引号引起来的字符串。
+
+```cpp
+#include <iostream>
+
+#define MKSTR(x)    #x
+
+int main() {
+    std::cout << MKSTR(HELLO C++) << std::endl;
+    return 0;
+}
+```
+
+输出：
+
+```cpp
+HELLO C++
+```
+
+实际上，在编译之前，C++ 预处理器把 `std::cout << MKSTR(HELLO C++) << std::endl;` 替换成了 `std::cout << "HELLO C++" << std::endl;`
+
+
+
+`##` 运算符用于连接两个令牌。
+
+```cpp
+#define CONCAT(x, y) x ## y
+```
+
+当 `CONCAT` 出现在程序中时，它的参数会被连接起来，并用来取代宏。例如，程序中 `CONCAT(HELLO, C++)` 会被替换为 `"HELLO C++"`，如下面实例所示。
+
+```cpp
+#include <iostream>
+using namespace std;
+ 
+#define concat(a, b) a ## b
+int main() {
+   int xy = 100;
+   
+   cout << concat(x, y);
+   return 0;
+}
+```
+
+输出：
+
+```bash
+100
+```
+
+在编译之前，C++ 预处理器把 `cout << concat(x, y);` 替换成了 `cout << xy;`
+
+
+
+### 6.5 C++ 中的预定义宏
+
+* `__LINE__`: 这会在程序编译时包含当前行号。
+* `__FILE__`: 这会在程序编译时包含当前文件名。
+* `__DATE__`: 这会包含一个形式为 `month/day/year` 的字符串，它表示把源文件转换为目标代码的日期。
+* `__TIME__`: 这会包含一个形式为 `hour:minute:second` 的字符串，它表示程序被编译的时间。
+
+```cpp
+#include <iostream>
+
+int main() {
+    std::cout << "Value of __FILE__: " << __FILE__ << std::endl;
+    std::cout << "Value of __LINE__: " << __LINE__ << std::endl;
+    std::cout << "Value of __DATE__: " << __DATE__ << std::endl;
+    std::cout << "Value of __TIME__: " << __TIME__ << std::endl;
+    return 0;
+}
+```
+
