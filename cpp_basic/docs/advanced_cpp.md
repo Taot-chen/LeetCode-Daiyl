@@ -317,3 +317,157 @@ C++ Exception
 * `what()` 是异常类提供的一个公共方法，它被所有子异常类重载, 返回异常产生的原因。
 
 
+
+
+## 3 动态内存
+
+C++ 程序中的内存分为两个部分：
+
+* 栈：在函数内部声明的所有变量都将占用栈内存。
+* 堆：这是程序中未使用的内存，在程序运行时可用于动态分配内存。
+
+很多时候，无法提前预知需要多少内存来存储某个定义变量中的特定信息，所需内存的大小需要在运行时才能确定。在 C++ 中，可以使用 `new` 运算符为给定类型的变量在运行时分配堆内的内存，并返回所分配的空间地址。
+
+在不再需要动态分配的内存空间时，可以使用 `delete` 运算符，删除之前由 `new` 运算符分配的内存。
+
+
+### 3.1 new 和 delete 运算符
+
+使用 new 运算符来为任意的数据类型动态分配内存的通用语法：
+
+```cpp
+new data-type;
+```
+
+data-type 可以是包括数组在内的任意内置的数据类型，也可以是包括类或结构在内的用户自定义的任何数据类型。
+
+```cpp
+double* pvalue = NULL;  // 初始化为 null 的指针
+pvalue = new double;    // 为变量请求内存
+```
+
+如果自由存储区已被用完，可能无法成功分配内存。建议检查 new 运算符是否返回 NULL 指针，并采取以下适当的操作：
+
+```cpp
+double* pvalue = NULL;
+if (!pvalue = new double) {
+    std::cout << "Error: out of memory." << std::endl;
+    exit(1);
+}
+```
+
+`malloc()` 函数在 C 语言中就出现了，在 C++ 中仍然存在，但建议尽量不要使用 `malloc()` 函数。new 与 malloc() 函数相比，其主要的优点是，**new 不只是分配了内存，它还创建了对象**。
+
+在任何时候，当某个已经动态分配内存的变量不再需要使用时，可以使用 `delete` 操作符释放它所占用的内存，如下所示：
+
+```cpp
+delete pvalue;  // 释放 pvalue 所指向的内存
+```
+
+
+
+### 3.2 数组的动态内存分配
+
+假设要为一个字符数组（一个有 20 个字符的字符串）分配内存，可以使用上面的语法来为数组动态地分配内存，如下所示：
+
+```cpp
+char* pvalue = NULL;    // 初始化为 null 的指针
+pvalue = new char[20];  // 为变量请求内存
+```
+
+删除刚才创建的数组，
+
+```cpp
+delete[] pvalue;   // 删除 pvalue 所指向的数组
+```
+
+new 操作符的通用语法，可以为多维数组分配内存:
+
+```cpp
+// 一维数组
+// 动态分配,数组长度为 m
+int *array = new int[m];
+
+// 释放内存
+delete[] array;
+
+
+// 二维数组
+int** array;
+// 假定数组第一维长度为 m， 第二维长度为 n
+// 动态分配空间
+array = new int* [m];
+for (int i = 0; i < m; i++) {
+    array[i] = new int[n];
+}
+
+// 释放
+for (int i = 0; i < m; i++) {
+    delete[] array[i];
+}
+delete[] array;
+
+
+// 三维数组
+int*** array;
+// 假定数组第一维为 m， 第二维为 n， 第三维为h
+// 动态分配空间
+array = new int** [m];
+for (int i = 0; i < m; i++) {
+    array[i] = new int* [n];
+    for (int j = 0; j < n; j++) {
+        array[i][j] = new int [h];
+    }
+}
+
+// 释放
+for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+        delete[] array[i][j];
+    }
+    delete[] array[i];
+}
+delete[] array;
+```
+
+
+### 3.3 对象的动态内存分配
+
+对象与简单的数据类型类似：
+
+```cpp
+#include <iostream>
+
+class Box {
+    public:
+        Box() {
+            std::cout << "调用构造函数！" << std::endl;
+        }
+        ~Box() {
+            std::cout << "调用析构函数！" << std::endl;
+        }
+};
+
+int main() {
+    Box* box = new Box[4];
+    delete[] box;   // 删除数组
+    return 0;
+}
+```
+
+为一个包含四个 Box 对象的数组分配内存，构造函数将被调用 4 次，同样地，当删除这些对象时，析构函数也将被调用相同的次数（4次）。
+
+输出：
+
+```cpp
+调用构造函数！
+调用构造函数！
+调用构造函数！
+调用构造函数！
+调用析构函数！
+调用析构函数！
+调用析构函数！
+调用析构函数！
+```
+
+
