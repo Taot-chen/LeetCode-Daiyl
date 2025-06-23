@@ -471,3 +471,294 @@ int main() {
 ```
 
 
+
+## 4 命名空间
+
+命名空间可作为附加信息来区分不同库中相同名称的函数、类、变量等。使用了命名空间即定义了上下文。本质上，命名空间就是定义了一个范围。
+
+
+### 4.1 定义命名空间
+
+命名空间的定义使用关键字 namespace，后跟命名空间的名称，
+
+```cpp
+namespace namespace_name {
+    // 代码
+}
+```
+
+为了调用带有命名空间的函数或变量，需要在前面加上命名空间的名称，
+
+```cpp
+name::code; // code 可以是变量或函数
+```
+
+```cpp
+#include <iostream>
+
+// 第一个命名空间
+namespace firt_space {
+    int a = 0;
+    void func() {
+        std::cout << "Inside first_space" << std::endl;
+    }
+}
+
+// 第二个命名空间
+namespace second_space {
+    double a = 1.1;
+    void func() {
+        std::cout << "Inside second_space" << std::endl;
+    }
+}
+
+int main() {
+    auto a = firt_space::a;
+    std::cout << "a = " << a << std::endl;
+    firt_space::func();
+
+    second_space::a += 2.2;
+    std::cout << "second_space::a: " << second_space::a << std::endl;
+    second_space::func();
+
+    return 0;
+}
+```
+
+
+
+### 4.2 using 指令
+
+可以使用 using namespace 指令，这样在使用命名空间时就可以不用在前面加上命名空间的名称。这个指令会告诉编译器，后续的代码将使用指定的命名空间中的名称。
+
+```cpp
+#include <iostream>
+
+// 第一个命名空间
+namespace firt_space {
+    int a = 0;
+    void func() {
+        std::cout << "Inside first_space" << std::endl;
+    }
+}
+
+// 第二个命名空间
+namespace second_space {
+    double a = 1.1;
+    void func() {
+        std::cout << "Inside second_space" << std::endl;
+    }
+}
+
+
+using namespace std;
+using namespace firt_space;
+int main() {
+    cout << "a = " << a << endl;
+    func();
+
+    return 0;
+}
+```
+
+using 指令也可以用来指定命名空间中的特定项目。例如，如果只使用 std 命名空间中的 cout 部分，可以使用如下的语句：
+
+```cpp
+using std::cout;
+```
+
+随后的代码中，在使用 cout 时就可以不用加上命名空间名称作为前缀，但是 std 命名空间中的其他项目仍然需要加上命名空间名称作为前缀，
+
+```cpp
+#include <iostream>
+using std::cout;
+
+int main() {
+    int a = 0;
+    cout << "a = " << a << std::endl;
+
+    return 0;
+}
+```
+
+using 指令引入的名称遵循正常的范围规则。名称从使用 using 指令开始是可见的，直到该范围结束。此时，在范围以外定义的同名实体是隐藏的。
+
+
+### 4.3 不连续的命名空间
+
+命名空间可以定义在几个不同的部分中，一个命名空间的各个组成部分可以分散在多个文件中。所以，如果命名空间中的某个组成部分需要请求定义在另一个文件中的名称，则仍然需要声明该名称。下面的命名空间定义可以是定义一个新的命名空间，也可以是为已有的命名空间增加新的元素：
+
+```cpp
+namespace namespace_name {
+   // 代码声明
+}
+```
+
+
+### 4.4 嵌套的命名空间
+
+命名空间可以嵌套，可以在一个命名空间中定义另一个命名空间，如下所示：
+
+```cpp
+namespace namespace_name1 {
+   // 代码声明
+   namespace namespace_name2 {
+      // 代码声明
+   }
+}
+```
+
+可以通过使用 :: 运算符来访问嵌套的命名空间中的成员：
+
+```cpp
+using namespace namespace_name1::namespace_name2;
+using namespace namespace_name1;
+```
+
+```cpp
+#include <iostream>
+
+// 第一个命名空间
+namespace firt_space {
+    int a = 0;
+    void func() {
+        std::cout << "Inside first_space" << std::endl;
+    }
+    // 第二个命名空间
+    namespace second_space {
+        double a = 1.1;
+        void func() {
+            std::cout << "Inside second_space" << std::endl;
+        }
+    }
+}
+
+using namespace firt_space::second_space;
+int main() {
+
+    // 调用第二个命名空间中的函数
+    func();
+    return 0;
+}
+```
+
+
+
+
+## 5 模板
+
+模板是泛型编程的基础，泛型编程以一种独立于任何特定类型的方式编写代码。
+
+模板是创建泛型类或函数的蓝图或公式。库容器，比如迭代器和算法，都是泛型编程的例子，它们都使用了模板的概念。每个容器都有一个单一的定义，比如 向量，我们可以定义许多不同类型的向量，比如 `vector <int>` 或 `vector <string>`。
+
+
+### 5.1 函数模板
+
+模板函数定义的一般形式如下所示：
+
+```cpp
+template <typename type> ret-type func-name(parameter list) {
+    // 函数主体
+}
+```
+
+`type` 是函数所使用的数据类型的占位符名称。这个名称可以在函数定义中使用。
+
+```cpp
+#include <iostream>
+#include <string>
+
+template <typename T> inline T const& Max (T const& a, T const& b) {
+    return a > b ? a : b;
+}
+
+int main() {
+    int a = 22, b = 12;
+    std::cout << "Max(a, b): " << Max(a, b) << std::endl;
+
+    double c = 1.2;
+    double d = 3.5;
+    std::cout << "Max(c, d): " << Max(c, d) << std::endl;
+
+    std::string e = "Hello";
+    std::string f = "World";
+    std::cout << "Max(e, f): " << Max(e, f) << std::endl;
+
+    return 0;
+}
+```
+
+
+### 5.2 类模板
+
+泛型类声明的一般形式如下所示：
+
+```cpp
+template <class type> class class-name {
+    ...
+}
+```
+
+type 是占位符类型名称，可以在类被实例化的时候进行指定。可以使用一个逗号分隔的列表来定义多个泛型数据类型。
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstdlib>
+#include <stdexcept>
+
+template <class T>
+class Stack {
+    private:
+        std::vector<T> elems;
+    public:
+        void push(T const&);
+        void pop();
+        T top();
+        bool empty() const {
+            return elems.empty();
+        }
+};
+
+template <class T>
+void Stack<T>::push(T const& elem) {
+    this->elems.push_back(elem);
+}
+
+template <class T> void Stack<T>::pop() {
+    if (this->elems.empty()) {
+        throw std::out_of_range("Stack<>::pop(): empty stack");
+    }
+    elems.pop_back();
+}
+
+template <class T>
+T Stack<T>::top() {
+    if (this->elems.empty()) {
+        throw std::out_of_range("Stack<>::top(): empty stack");
+    }
+    return elems.back();
+}
+
+
+int main() {
+    try {
+        Stack<int> intStack;
+        Stack<std::string> stringStack;
+
+        intStack.push(7);
+        std::cout << intStack.top() << std::endl;
+
+        stringStack.push("hello");
+        std::cout << stringStack.top() << std::endl;
+        stringStack.pop();
+        stringStack.pop();
+    } catch (std::exception const& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return -1;
+    }
+    return 0;
+}
+```
+
