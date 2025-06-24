@@ -8,6 +8,7 @@ Leetcode 刷题记录
     * [C++基本语法结构](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/docs/cpp_basic_structure.md)
     * [C++面向对象](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/docs/cpp_object_oriented.md)
     * [STL](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/docs/stl.md)
+    * [C++进阶](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/cpp_basic/docs/advanced_cpp.md)
 
 * [算法练习](https://github.com/Taot-chen/LeetCode-Daiyl/tree/main/algorithm)
     * [Array]()
