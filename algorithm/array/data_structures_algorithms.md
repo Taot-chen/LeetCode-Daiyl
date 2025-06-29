@@ -353,11 +353,11 @@ $O(1)$ < $O(\log n)$ < $O(n)$ < $O(n^2)$ < $O(2^n)$
 
 基础题，没啥说的:
 
-* [2235_两数相加]()
-* [1929_数组串联]()
-* [0771_宝石与石头]()
-* [1480_一维数组的动态和]()
-* [0709_转换成小写字母]()
+* [2235_两数相加](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/algorithm/array/src/2235_%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0.cpp)
+* [1929_数组串联](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/algorithm/array/src/1929_%E6%95%B0%E7%BB%84%E4%B8%B2%E8%81%94.cpp)
+* [0771_宝石与石头](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/algorithm/array/src/0771_%E5%AE%9D%E7%9F%B3%E4%B8%8E%E7%9F%B3%E5%A4%B4.cpp)
+* [1480_一维数组的动态和](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/algorithm/array/src/1480_%E4%B8%80%E7%BB%B4%E6%95%B0%E7%BB%84%E7%9A%84%E5%8A%A8%E6%80%81%E5%92%8C.cpp)
+* [0709_转换成小写字母](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/algorithm/array/src/0709_%E8%BD%AC%E6%8D%A2%E6%88%90%E5%B0%8F%E5%86%99%E5%AD%97%E6%AF%8D.cpp)
     最想到的是两种方法：
 
     1）使用 `tolower()` 函数
@@ -380,4 +380,4 @@ $O(1)$ < $O(\log n)$ < $O(n)$ < $O(n^2)$ < $O(2^n)$
     return s;
     ```
     
-* [1672_最富有客户的资产总量]()
+* [1672_最富有客户的资产总量](https://github.com/Taot-chen/LeetCode-Daiyl/blob/main/algorithm/array/src/1672_%E6%9C%80%E5%AF%8C%E6%9C%89%E5%AE%A2%E6%88%B7%E7%9A%84%E8%B5%84%E4%BA%A7%E6%80%BB%E9%87%8F.cpp)

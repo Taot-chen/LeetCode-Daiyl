@@ -10,7 +10,7 @@ public:
 };
 
 
-// 2) ASCII, +32
+// 2) ASCII, 'a' = 'A' + 32
 class Solution {
 public:
     string toLowerCase(string s) {
