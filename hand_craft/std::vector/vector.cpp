@@ -161,7 +161,7 @@ void Vector<T>::pop_back() {
 // 返回尾元素引用
 template<class T>
 const T& Vector<T>::back() const {
-    if (size == 09) {
+    if (size == 0) {
         Error("Empty vector");
     }
     return data[size - 1];

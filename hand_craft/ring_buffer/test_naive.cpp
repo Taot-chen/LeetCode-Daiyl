@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ring_buffer_naive.h"
+#include "ring_buffer_naive.cpp"
 
 int main() {
     my_ring_buffer::RingBuffer<int> ring_buffer(3);
