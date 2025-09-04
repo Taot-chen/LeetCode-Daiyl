@@ -1,4 +1,4 @@
-3. 无重复字符的最长子串
+// 3. 无重复字符的最长子串
 
 ```cpp
 int lengthOfLongestSubstring(string s) {
@@ -18,3 +18,8 @@ int lengthOfLongestSubstring(string s) {
 ```
 
 
+// 14. 最长公共前缀
+
+```cpp
+
+```
